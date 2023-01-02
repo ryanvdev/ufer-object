@@ -1,131 +1,123 @@
 
-export type ComparisonResults = 'equals' | 'not-equals' | 'unknown';
 
-export const valueTypes = Object.freeze(["string", "number", "bigint", "boolean", "symbol", "undefined"]);
 
-export const deepCompare = (a:unknown, b:unknown):ComparisonResults => {
-    if(a === b) return 'equals';
+export const deepCompareTwoObjects = (a:unknown, b:unknown):boolean => {
+    if(a === b) return true;
 
     const commonType = typeof a;
-    if(commonType !== typeof b) return 'not-equals';
+    if(commonType !== typeof b) return false;
 
-    //! case NaN
-    if(commonType === 'number'){
-        if(isNaN(a as number) && isNaN(b as number)){
-            return 'equals';
+    switch(commonType){
+        case 'number': {
+            if(isNaN(a as number) && isNaN(b as number)) {
+                return true;
+            }
+            return (a === b);
         }
-
-        if(a === b) return 'equals';
-        return 'not-equals';
-    }
-
-    //! case value types
-    if(valueTypes.includes(commonType)) {
-        if(a === b) return 'equals';
-        return 'not-equals';
-    }
-
-    //! case function
-    if(commonType === 'function'){
-        if(String(a) === String(b)) return 'equals';
-        return 'not-equals';
-    }
-
-    //! case null
-    if(a === null || b === null){
-        if(a === b) return 'equals';
-        return 'not-equals';
-    }
-
-    //! case: Date
-    if(a instanceof Date) {
-        if(!(b instanceof Date)) return 'not-equals';
-
-        if(a.toJSON() === b.toJSON()) return 'equals';
-        
-        return 'not-equals';
-    }
-
-    //! case Array
-    if(Array.isArray(a) || Array.isArray(b)){
-        if(!Array.isArray(a)) return 'not-equals';
-        if(!Array.isArray(b)) return 'not-equals';
-
-        if(a.length !== b.length) return 'not-equals';
-
-        for(let i = 0; i < a.length; i++){
-            const result = deepCompare(a[i], b[i]);
-            if(result !== 'equals') return result;
+        case 'string':
+        case 'bigint':
+        case 'boolean':
+        case 'undefined':
+        case 'symbol': {
+            return (a === b);
         }
+        case 'object': {
+            //! case null | undefined
+            if(a === null || b === null ) return (a === b);
+            if(a === undefined || b === undefined) return (a === b);
 
-        return 'equals';
-    }
+            //! 
+            if(a.constructor !== b.constructor) return false;
 
-    //! case Object
-    if(a instanceof Object){
-        if(!(b instanceof Object)) return 'not-equals';
+            //! case: Date
+            if(a instanceof Date) {
+                if(!(b instanceof Date)) return false;
+                return (a.toJSON() === b.toJSON());
+            }
 
-        const keysOfA = Object.keys(a);
-        const keysOfB = Object.keys(a);
+            //! case: Array
+            if(Array.isArray(a) || Array.isArray(b)){
+                if(!Array.isArray(a)) return false;
+                if(!Array.isArray(b)) return false;
+                if(a.length !== b.length) return false;
 
-        if(keysOfA.length !== keysOfB.length) return 'not-equals';
+                for(let i = 0; i < a.length; i++){
+                    if(deepCompare(a[i], b[i]) === false) return false;
+                }
 
-        for(let i = 0; i < keysOfA.length; i++) {
-            const key = keysOfA[i];
-            if(keysOfB.includes(key) === false) return 'not-equals';
+                return true;
+            }
 
-            const result = deepCompare(
-                (a as any)[key],
-                (b as any)[key]
-            );
 
-            if(result !== 'equals') return result;
+            const keysOfA = Object.keys(a);
+            const keysOfB = Object.keys(a);
+            if(keysOfA.length !== keysOfB.length) return false;
+
+            for(let i = 0; i < keysOfA.length; i++) {
+                const key = keysOfA[i];
+                if(keysOfB.includes(key) === false) return false;
+                
+                if(deepCompare((a as any)[key], (b as any)[key]) === false) return false;
+            }
+
+            return true;
         }
+        case 'function': {
+            return (String(a) === String(b));
+        }
+        default: {
+            throw new Error(`[deepCompare] Cannot resolve type of object is ${commonType}`);
+        }
+    }
+}
 
-        return 'equals';
+
+export const deepCompare = (firstSubject:unknown, secondSubject:unknown, ...subjects:unknown[]):boolean => {
+    if(deepCompareTwoObjects(firstSubject, secondSubject) === false) return false;
+
+    for(let i = 0; i < subjects.length; i++){
+        if(deepCompareTwoObjects(firstSubject, subjects[i]) === false) return false;
     }
     
-    return 'unknown';
+    return true;
 }
 
 export const deepCopy = <T>(obj:T):T => {
-    const objType = typeof obj;
+    switch(typeof obj){
+        case 'number':
+        case 'string':
+        case 'bigint':
+        case 'boolean':
+        case 'undefined':
+        case 'function':
+        case 'symbol': {
+            return obj;
+        }
+        case 'object': {
+            //! case null | undefined
+            if(obj === null) return null as T;
+            if(obj === undefined) return undefined as T;
 
-    //! case value types
-    if(valueTypes.includes(objType)) {
-        return obj;
-    }
-    
-    //! case function
-    if(objType === 'function'){
-        return obj;
-    }
+            //! case: Date
+            if(obj instanceof Date) {
+                return (new Date(obj.toJSON())) as T;
+            }
 
-    //! case null
-    if(obj === null){
-        return (null as T);
-    }
+            //! case: Array
+            if(Array.isArray(obj)){
+                return obj.map((item) => deepCopy(item)) as T;
+            }
 
-    //! case: Date
-    if(obj instanceof Date) {
-        return (new Date(obj.toJSON())) as T;
+            //! case Object
+            const keys = Object.keys(obj);
+            // keys.sort();
+            return keys.reduce((sum, key)=>{
+                sum[key] = deepCopy((obj as any)[key]);
+                return sum;
+            }, {} as any);
+        }
+        default: {
+            throw new Error(`[deepCompare] Cannot resolve type of object is ${typeof obj}`);
+        }
     }
-
-    //! case Array
-    if(Array.isArray(obj)){
-        return obj.map((item) => deepCopy(item)) as T;
-    }
-
-    //! case Object
-    if(obj instanceof Object){
-        const keys = Object.keys(obj);
-        keys.sort();
-
-        return keys.reduce((sum, key)=>{
-            sum[key] = deepCopy((obj as any)[key]);
-            return sum;
-        }, {} as any);
-    }
-    
-    return obj;
 }

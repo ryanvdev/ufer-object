@@ -8,11 +8,22 @@
         "lib"
     ],
     "scripts": {
+        "dev": "nodemon ./test/index.ignore.ts",
         "test": "jest",
         "build": "tsc",
         "prepare" : "npm run build"
     },
-    "keywords": ["deep copy", "deep clone", "deep compare", "compare object", "compare array"],
+    "keywords": [
+        "deep copy",
+        "deep clone",
+        "deep compare",
+        "compare object",
+        "compare array",
+        "typescript deepCopy",
+        "ts-deep-copy",
+        "typescript deep compare",
+        "ts-deep-compare"
+    ],
     "author": "",
     "license": "ISC",
     "devDependencies": {

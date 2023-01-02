@@ -45,15 +45,15 @@ describe('deepCompare', ()=>{
     }
 
     test('should be equals', () => {
-        expect(deepCompare(objA, objB)).toBe('equals');
+        expect(deepCompare(objA, objB)).toBe(true);
     });
 
     test('should be equals', () => {
-        expect(deepCompare(objA.a, objC.a)).toBe('equals');
+        expect(deepCompare(objA.a, objC.a)).toBe(true);
     });
 
     test('should be not-equals', () => {
-        expect(deepCompare(objA, objC)).toBe('not-equals');
+        expect(deepCompare(objA, objC)).toBe(false);
     });
 
 
@@ -65,14 +65,14 @@ describe('deepCompare', ()=>{
     const arrC = [1,2,3];
 
     test('should be not-equals', () => {
-        expect(deepCompare(arrA, arrC)).toBe('not-equals');
+        expect(deepCompare(arrA, arrC)).toBe(false);
     });
 
 
     const arrD1 = [1, 2, 'a', {a:1, b:2}, NaN];
     const arrD2 = [1, 2, 'a', {a:1, b:2}, NaN];
     test('should be equals', () => {
-        expect(deepCompare(arrD1, arrD2)).toBe('equals');
+        expect(deepCompare(arrD1, arrD2)).toBe(true);
     });
 
 
@@ -87,7 +87,7 @@ describe('deepCompare', ()=>{
     };
 
     test('should be not-equals', () => {
-        expect(deepCompare(arrE1, arrD1)).toBe('not-equals');
+        expect(deepCompare(arrE1, arrD1)).toBe(false);
     });
 
 
@@ -103,24 +103,24 @@ describe('deepCompare', ()=>{
     }
 
     test('should be equals', () => {
-        expect(deepCompare(funcA, funcB)).toBe('equals');
+        expect(deepCompare(funcA, funcB)).toBe(true);
     });
 
     test('should be not-equals', () => {
-        expect(deepCompare(funcA, funcC)).toBe('not-equals');
+        expect(deepCompare(funcA, funcC)).toBe(false);
     });
 
     //! Check Date
     const dateA = new Date('2023-01-01T20:31:51.124Z');
     const dateB = new Date('2023-01-01T20:31:51.124Z');
-    const dateC = new Date('2024-02-01T20:31:51.124Z');
+    const toDay = new Date();
 
     test('should be equals', () => {
-        expect(deepCompare(dateA, dateB)).toBe('equals');
+        expect(deepCompare(dateA, dateB)).toBe(true);
     });
 
     test('should be not-equals', () => {
-        expect(deepCompare(dateA, dateC)).toBe('not-equals');
+        expect(deepCompare(dateA, toDay)).toBe(false);
     });
 
     //! Re-Check
@@ -128,14 +128,22 @@ describe('deepCompare', ()=>{
     const cloneArray = [...originalArray];
 
     test('should be equals', () => {
-        expect(deepCompare(originalArray, cloneArray)).toBe('equals');
+        expect(deepCompare(originalArray, cloneArray)).toBe(true);
     });
 
     test('should be not-equals', () => {
-        expect(deepCompare(NaN, cloneArray)).toBe('not-equals');
+        expect(deepCompare(NaN, cloneArray)).toBe(false);
     });
 
     test('should be equals', () => {
-        expect(deepCompare(NaN, NaN)).toBe('equals');
+        expect(deepCompare(NaN, NaN)).toBe(true);
+    });
+
+    test('should be equals', () => {
+        expect(deepCompare(objA, objB, {...objB}, {...objA})).toBe(true);
+    });
+
+    test('should be not-equals', () => {
+        expect(deepCompare(objA, objB, {...objB}, {...arrA, z: 1}, {...objA})).toBe(false);
     });
 });
