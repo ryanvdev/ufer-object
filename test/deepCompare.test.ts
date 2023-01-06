@@ -1,4 +1,4 @@
-import { deepCompare } from "../src";
+import { deepCompare } from "../lib";
 
 
 

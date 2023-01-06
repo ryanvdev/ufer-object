@@ -1,28 +1,31 @@
 {
     "name": "ufer-object",
-    "version": "1.0.0",
-    "description": "deepCopy an object, array, number or everything. deep compare two objects or two arrays or every everything",
+    "version": "1.1.0",
+    "description": "Support typescript, node-typescript and reactjs. Deep copy object, deep copy array. Deep compare objects, deep copy arrays. Deep freeze object, deep freeze array.",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
+    "type": "commonjs",
     "files": [
         "lib"
     ],
     "scripts": {
         "dev": "nodemon ./test/index.ignore.ts",
         "test": "jest",
-        "build": "tsc",
+        "build": "rmdir /S /Q lib & tsc",
         "prepare" : "npm run build"
     },
     "keywords": [
+        "deep",
+        "freeze",
         "deep copy",
         "deep clone",
         "deep compare",
+        "deep freeze",
         "compare object",
         "compare array",
-        "typescript deepCopy",
-        "ts-deep-copy",
+        "typescript deep copy",
         "typescript deep compare",
-        "ts-deep-compare"
+        "typescript deep freeze"
     ],
     "author": "",
     "license": "ISC",

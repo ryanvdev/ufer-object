@@ -1,4 +1,4 @@
-import {deepCopy} from "../src";
+import {deepCopy} from "../lib";
 
 describe('deepCopy', () => {
     test('should be true', () => {

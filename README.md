@@ -1,4 +1,4 @@
-# deepCompare
+# Deep compare - deepCompare
 
 ## 1. Compare objects
 
@@ -190,7 +190,7 @@ deepCompare(rosieDog, sunnyDog); // return true;
 
 ```
 
-# deepCopy
+# Deep copy - deepCopy
 
 ## 1. deep-copy everything you want
 
@@ -224,4 +224,37 @@ deepCopy([1, 2, 3, 4, 5, NaN, '7', {a: 1, b: 2}, ]);
 // WARNING: Not support deep-copy instance of object which created by custom-class. Consider the following example:
         // const rosieDog = new Dog('Rosie');
         // deepCopy(rosieDog) // ! NOT-SUPPORT
+```
+
+
+# Deep freeze - deepFreeze
+
+```ts
+import { deepFreeze } from 'ufer-object';
+
+const subject = {
+    a: 1,
+    b: '2',
+    c: [
+        null,
+        '1',
+        2,
+        {
+            a: 1,
+            b: 2
+        },
+        new Date()
+    ]
+}
+
+const frozenObject = deepFreeze(subject);
+
+console.log( subject === frozenObject ); // return true
+
+subject.a = 2 // TypeError: Cannot assign to read only property 'a' of object '#<Object>'
+
+subject.c[3] = 2 // TypeError: Cannot assign to read only property '3' of object '[object Array]'
+
+(subject.c[3] as any).a = 2 // Cannot assign to read only property 'a' of object '#<Object>'
+
 ```
