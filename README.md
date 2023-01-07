@@ -1,6 +1,25 @@
-# Deep compare - deepCompare
+# Table of contents
 
-## 1. Compare objects
+- [Table of contents](#table-of-contents)
+- [API](#api)
+  - [Deep compare - deepCompare](#deep-compare---deepcompare)
+    - [1. Compare objects](#1-compare-objects)
+    - [2. Compare arrays](#2-compare-arrays)
+    - [3. Compare objects and arrays](#3-compare-objects-and-arrays)
+    - [4. Compare everything you want](#4-compare-everything-you-want)
+  - [Deep copy - deepCopy](#deep-copy---deepcopy)
+    - [1. deep-copy everything you want](#1-deep-copy-everything-you-want)
+  - [Deep freeze - deepFreeze](#deep-freeze---deepfreeze)
+
+
+# API
+
+## Deep compare - deepCompare
+
+
+
+
+### 1. Compare objects
 
 ```ts
 import { deepCompare } from 'ufer-object';
@@ -60,7 +79,7 @@ deepCompare(objA.a, objC.a); // return true
 
 ```
 
-## 2. Compare arrays
+### 2. Compare arrays
 ```ts
 import {deepCompare} from 'ufer-object';
 
@@ -73,7 +92,7 @@ deepCompare(arr1, arr2, [...arr1]); // return true;
 deepCompare(arr1, arr3); // return false;
 ```
 
-## 3. Compare objects and arrays
+### 3. Compare objects and arrays
 
 ```ts
 const objectLikeArray = {
@@ -92,7 +111,7 @@ deepCompare(objectLikeArray, arr1); // return false;
 deepCompare(arr1, arr2); // return true;
 ```
 
-## 4. Compare everything you want
+### 4. Compare everything you want
 ```ts
 import {deepCompare} from 'ufer-object';
 
@@ -190,9 +209,9 @@ deepCompare(rosieDog, sunnyDog); // return true;
 
 ```
 
-# Deep copy - deepCopy
+## Deep copy - deepCopy
 
-## 1. deep-copy everything you want
+### 1. deep-copy everything you want
 
 ```ts
 // deep-copy date ==========================
@@ -227,7 +246,7 @@ deepCopy([1, 2, 3, 4, 5, NaN, '7', {a: 1, b: 2}, ]);
 ```
 
 
-# Deep freeze - deepFreeze
+## Deep freeze - deepFreeze
 
 ```ts
 import { deepFreeze } from 'ufer-object';
